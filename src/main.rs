@@ -1,64 +1,34 @@
+mod widgets;
+
 use std::io;
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
-use tui::widgets::{Widget, Block, Borders};
-use tui::layout::{Layout, Constraint, Direction};
 
 fn main() -> Result<(), io::Error> {
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
     terminal.draw(|frame| {
-        let chunks = Layout::default()
-            .direction(Direction::Vertical)
-            .margin(1)
-            .constraints(
-                [
-                    Constraint::Percentage(10),
-                    Constraint::Percentage(90),
-                ].as_ref()
-            )
+        let chunks = widgets::get_chunks()
             .split(frame.size());
 
-        let top = Layout::default()
-            .direction(Direction::Horizontal)
-            .constraints(
-                [
-                    Constraint::Percentage(80),
-                    Constraint::Percentage(20),
-                ].as_ref()
-            )
+        let top = widgets::get_top_chunk()
             .split(chunks[0]);
 
-        let bottom = Layout::default()
-            .direction(Direction::Horizontal)
-            .constraints(
-                [
-                    Constraint::Percentage(80),
-                    Constraint::Percentage(20),
-                ].as_ref()
-            )
+        let bottom = widgets::get_bottom_chunk()
             .split(chunks[1]);
 
-        let timescale_block = Block::default()
-            .title("Timescale")
-            .borders(Borders::ALL);
-        frame.render_widget(timescale_block, top[0]);
+        let timescale = widgets::get_timescale_block();
+        frame.render_widget(timescale, top[0]);
 
-        let change_block = Block::default()
-            .title("Change");
-        frame.render_widget(change_block, top[1]);
+        let change = widgets::get_change_block();
+        frame.render_widget(change, top[1]);
 
-        let graph_block = Block::default()
-             .title("Graph")
-             .borders(Borders::ALL);
-        frame.render_widget(graph_block, bottom[0]);
+        let graph = widgets::get_graph_block();
+        frame.render_widget(graph, bottom[0]);
 
-        let exchange_block = Block::default()
-             .title("Exchange")
-             .borders(Borders::ALL);
-
-        frame.render_widget(exchange_block, bottom[1]);
+        let exchange = widgets::get_exchange_block();
+        frame.render_widget(exchange, bottom[1]);
     })?;
 
     Ok(())
