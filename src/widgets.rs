@@ -8,8 +8,8 @@ pub fn get_chunks() -> Layout {
         .margin(1)
         .constraints(
             [
-                Constraint::Percentage(10),
-                Constraint::Percentage(90),
+                Constraint::Length(3),
+                Constraint::Min(10),
             ].as_ref()
         )
 }
