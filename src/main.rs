@@ -18,7 +18,7 @@ fn main() -> Result<(), io::Error> {
         let bottom = widgets::get_bottom_chunk()
             .split(chunks[1]);
 
-        let timescale = widgets::get_timescale_block();
+        let timescale = widgets::get_timescale_tabs();
         frame.render_widget(timescale, top[0]);
 
         let change = widgets::get_change_block();

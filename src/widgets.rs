@@ -1,5 +1,6 @@
-use tui::widgets::{Block, Borders};
+use tui::widgets::{Block, Borders, Tabs};
 use tui::layout::{Layout, Constraint, Direction};
+use tui::text::Spans;
 
 pub fn get_chunks() -> Layout {
     Layout::default()
@@ -35,10 +36,14 @@ pub fn get_bottom_chunk() -> Layout {
         )
 }
 
-pub fn get_timescale_block<>() -> Block<'static> {
-    Block::default()
+pub fn get_timescale_tabs() -> Tabs<'static> {
+    let block = Block::default()
         .title("Timescale")
-        .borders(Borders::ALL)
+        .borders(Borders::ALL);
+
+    let titles = ["24H", "48H", "7D", "30D", "12M"].iter().cloned().map(Spans::from).collect();
+    Tabs::new(titles)
+        .block(block)
 }
 
 pub fn get_change_block() -> Block<'static> {
