@@ -1,4 +1,5 @@
 mod widgets;
+mod data;
 
 use std::io;
 use tui::Terminal;
