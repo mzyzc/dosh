@@ -1,5 +1,5 @@
 mod widgets;
-mod data;
+mod coin;
 
 use std::io;
 use tui::Terminal;
