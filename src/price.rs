@@ -12,7 +12,7 @@ pub struct Price {
 impl Price {
     pub fn from_price(json: &str, currency: &str) -> Result<Price, Box<dyn Error>> {
         let data = json::parse(json)?;
-        let (coin, data) = data
+        let (_coin, data) = data
             .entries()
             .next()
             .ok_or_else(|| "Could not parse JSON")?;

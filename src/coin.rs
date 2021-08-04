@@ -4,10 +4,11 @@ use std::error::Error;
 use std::str;
 use ureq;
 
+#[derive(Debug)]
 pub struct Coin{
     name: String,
-    price: String,
-    history: String,
+    price: Price,
+    history: Vec<Price>,
 }
 
 impl Coin {
@@ -22,21 +23,18 @@ impl Coin {
         })
     }
 
-    pub fn get_price(coin: &str, currency: &str) -> Result<String, Box<dyn Error>> {
-        let separator = "%2C";
+    pub fn get_price(coin: &str, currency: &str) -> Result<Price, Box<dyn Error>> {
         let url = format!("https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies={}&include_24h_change=true",
             coin,
             currency,
         );
 
         let data = get(&url)?;
-        println!("{:#?}\n",
-            Price::from_price(&data, &currency)?
-        );
-        Ok(data)
+        let price = Price::from_price(&data, currency)?;
+        Ok(price)
     }
 
-    pub fn get_history(coin: &str, currency: &str, days: u32) -> Result<String, Box<dyn Error>> {
+    pub fn get_history(coin: &str, currency: &str, days: u32) -> Result<Vec<Price>, Box<dyn Error>> {
         let url = format!("https://api.coingecko.com/api/v3/coins/{}/market_chart?vs_currency={}&days={}",
             coin,
             currency,
@@ -44,10 +42,8 @@ impl Coin {
         );
 
         let data = get(&url)?;
-        println!("{:#?}\n",
-            Price::from_history(&data, currency)?
-        );
-        Ok(data)
+        let history = Price::from_history(&data, currency)?;
+        Ok(history)
     }
 }
 
