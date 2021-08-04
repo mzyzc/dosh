@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
-    let coin = Coin::new("ethereum")?;
+    let coin = Coin::new("ethereum", "gbp", 7)?;
 
     /*
     loop {

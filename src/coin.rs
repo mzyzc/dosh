@@ -11,9 +11,9 @@ pub struct Coin{
 }
 
 impl Coin {
-    pub fn new(name: &str) -> Result<Coin, Box<dyn Error>> {
-        let price = Coin::get_price(name, &["usd"])?;
-        let history = Coin::get_history(name, "usd", 7)?;
+    pub fn new(name: &str, currency: &str, days: u32) -> Result<Coin, Box<dyn Error>> {
+        let price = Coin::get_price(name, currency)?;
+        let history = Coin::get_history(name, currency, days)?;
 
         Ok(Coin{
             name: String::from(name),
@@ -22,16 +22,16 @@ impl Coin {
         })
     }
 
-    pub fn get_price(coin: &str, currencies: &[&str]) -> Result<String, Box<dyn Error>> {
+    pub fn get_price(coin: &str, currency: &str) -> Result<String, Box<dyn Error>> {
         let separator = "%2C";
         let url = format!("https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies={}&include_24h_change=true",
             coin,
-            currencies.join(separator),
+            currency,
         );
 
         let data = get(&url)?;
         println!("{:#?}\n",
-            Price::from_price(&data)?
+            Price::from_price(&data, &currency)?
         );
         Ok(data)
     }

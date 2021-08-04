@@ -10,14 +10,14 @@ pub struct Price {
 }
 
 impl Price {
-    pub fn from_price(json: &str) -> Result<Price, Box<dyn Error>> {
+    pub fn from_price(json: &str, currency: &str) -> Result<Price, Box<dyn Error>> {
         let data = json::parse(json)?;
-        let (currency, data) = data
+        let (coin, data) = data
             .entries()
             .next()
             .ok_or_else(|| "Could not parse JSON")?;
 
-        let value = data["usd"]
+        let value = data[currency]
             .as_f32()
             .ok_or_else(|| "Currency value does not seem to be a number")?;
 
