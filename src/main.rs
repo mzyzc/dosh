@@ -1,5 +1,6 @@
-mod widgets;
 mod coin;
+mod price;
+mod widgets;
 
 use coin::Coin;
 
@@ -14,6 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let coin = Coin::new("ethereum")?;
 
+    /*
     loop {
         terminal.draw(|frame| {
             let chunks = widgets::get_chunks()
@@ -38,6 +40,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             frame.render_widget(exchange, bottom[1]);
         })?;
     }
+    */
 
     Ok(())
 }

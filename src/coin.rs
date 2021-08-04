@@ -1,3 +1,5 @@
+use crate::price::Price;
+
 use std::error::Error;
 use std::str;
 use ureq;
@@ -28,6 +30,9 @@ impl Coin {
         );
 
         let data = get(&url)?;
+        println!("{:#?}\n",
+            Price::from_price(&data)?
+        );
         Ok(data)
     }
 
@@ -39,6 +44,9 @@ impl Coin {
         );
 
         let data = get(&url)?;
+        println!("{:#?}\n",
+            Price::from_history(&data, currency)?
+        );
         Ok(data)
     }
 }
