@@ -1,13 +1,18 @@
 mod widgets;
 mod coin;
 
+use coin::Coin;
+
+use std::error::Error;
 use std::io;
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
 
-fn main() -> Result<(), io::Error> {
+fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
+
+    let coin = Coin::new("ethereum")?;
 
     loop {
         terminal.draw(|frame| {
