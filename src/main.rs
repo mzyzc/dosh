@@ -15,7 +15,6 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let coin = Coin::new("ethereum", "gbp", 7)?;
 
-    /*
     loop {
         terminal.draw(|frame| {
             let chunks = widgets::get_chunks()
@@ -40,7 +39,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             frame.render_widget(exchange, bottom[1]);
         })?;
     }
-    */
 
     Ok(())
 }
