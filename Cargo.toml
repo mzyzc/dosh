@@ -1,5 +1,5 @@
 [package]
-name = "argentrack"
+name = "dosh"
 version = "0.1.0"
 authors = ["mzyzc <mzyzc@czyz.xyz>"]
 edition = "2018"
