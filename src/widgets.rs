@@ -1,7 +1,8 @@
 use crate::coin::Coin;
 
 use tui::widgets::{Axis, Block, Borders, Chart, Dataset, GraphType, Paragraph, Tabs};
-use tui::layout::{Alignment, Layout, Constraint, Direction};
+use tui::layout::{Layout, Constraint, Direction};
+use tui::style::{Color, Style};
 use tui::symbols::Marker;
 use tui::text::Spans;
 
@@ -53,22 +54,31 @@ pub fn get_change_block(coin: &Coin) -> Paragraph {
     let block = Block::default()
         .title("Change");
 
-    let change = &coin.change;
-    let increase = if *change >= 0.0 {true} else {false};
+    let increase = if *&coin.change >= 0.0 {true} else {false};
 
     let text = format!("{}{:.2}%",
-        if increase {"+"} else {"-"},
-        change,
+        if increase {"+"} else {""},
+        *&coin.change,
     );
 
     Paragraph::new(text)
         .block(block)
+        .style(Style::default()
+            .fg(
+                if *&coin.change >= 0.0 {Color::Green} else {Color::Red}
+            )
+        )
 }
 pub fn get_graph(coin: &Coin) -> Chart {
     let datasets = vec![
         Dataset::default()
             .marker(Marker::Braille)
             .graph_type(GraphType::Line)
+            .style(Style::default()
+                .fg(
+                    if *&coin.change >= 0.0 {Color::Green} else {Color::Red}
+                )
+            )
             .data(&coin.data_points)
     ];
 
