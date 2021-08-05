@@ -65,15 +65,25 @@ pub fn get_graph(coin: &Coin) -> Chart {
         .title("History")
         .borders(Borders::ALL);
 
+    let lower_bound = match &coin.data_points.first() {
+        Some(data) => (data.0, data.1),
+        None => (0.0, 0.0),
+    };
+
+    let upper_bound = match &coin.data_points.last() {
+        Some(data) => (data.0, data.1),
+        None => (0.0, 0.0),
+    };
+
     Chart::new(datasets)
         .block(block)
         .x_axis(
             Axis::default()
-                .bounds([1627603200000.0, 1628159450000.0])
+                .bounds([lower_bound.0, upper_bound.0])
         )
         .y_axis(
             Axis::default()
-                .bounds([1700.0, 1900.0])
+                .bounds([lower_bound.1 / 2.0, upper_bound.1 * 2.0])
         )
 }
 
