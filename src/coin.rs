@@ -52,6 +52,37 @@ impl Coin {
         Ok(history)
     }
 
+    pub fn get_price_bounds(&self) -> (f64, f64) {
+        let mut min = self.data_points[0].1;
+        let mut max = 0.0;
+
+        for point in self.data_points.iter() {
+            if point.1 < min {
+                min = point.1;
+            }
+
+            if point.1 > max {
+                max = point.1
+            }
+        }
+
+        (min, max)
+    }
+
+    pub fn get_date_bounds(&self) -> (f64, f64) {
+        let min = match self.data_points.first() {
+            Some(data) => data.0,
+            None => 0.0,
+        };
+
+        let max = match self.data_points.last() {
+            Some(data) => data.0,
+            None => 0.0,
+        };
+
+        (min, max)
+    }
+
     fn get_data_points(history: &[Price]) -> Vec<(f64, f64)> {
         history
             .iter()
