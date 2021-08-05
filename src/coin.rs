@@ -8,6 +8,7 @@ use ureq;
 pub struct Coin{
     pub name: String,
     pub price: Price,
+    pub change: f64,
     pub history: Vec<Price>,
     pub data_points: Vec<(f64, f64)>,
 }
@@ -16,15 +17,13 @@ impl Coin {
     pub fn new(name: &str, currency: &str, days: u32) -> Result<Coin, Box<dyn Error>> {
         let price = Coin::get_price(name, currency)?;
         let history = Coin::get_history(name, currency, days)?;
-
-        let data_points = history
-            .iter()
-            .map(|c| (c.timestamp.timestamp() as f64, c.value as f64))
-            .collect();
+        let data_points = Coin::get_data_points(&history);
+        let change = Coin::get_change(&data_points);
 
         Ok(Coin{
             name: String::from(name),
             price: price,
+            change: change,
             history: history,
             data_points: data_points,
         })
@@ -51,6 +50,27 @@ impl Coin {
         let data = get(&url)?;
         let history = Price::from_history(&data, currency)?;
         Ok(history)
+    }
+
+    fn get_data_points(history: &[Price]) -> Vec<(f64, f64)> {
+        history
+            .iter()
+            .map(|c| (c.timestamp.timestamp() as f64, c.value as f64))
+            .collect()
+    }
+
+    fn get_change(prices: &[(f64, f64)]) -> f64 {
+        let oldest = match prices.first() {
+            Some(data) => data.1,
+            None => 0.0,
+        };
+
+        let newest = match prices.last() {
+            Some(data) => data.1,
+            None => 0.0,
+        };
+        
+        ((newest - oldest) / oldest) * 100.0
     }
 }
 
