@@ -45,7 +45,7 @@ pub fn get_timescale_tabs() -> Tabs<'static> {
         .title("Timescale")
         .borders(Borders::ALL);
 
-    let titles = ["24H", "48H", "7D", "30D", "12M"].iter().cloned().map(Spans::from).collect();
+    let titles = ["1D", "2D", "7D", "30D", "365D"].iter().cloned().map(Spans::from).collect();
     Tabs::new(titles)
         .block(block)
 }
