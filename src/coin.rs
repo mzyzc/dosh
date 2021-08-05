@@ -18,14 +18,14 @@ impl Coin {
         let price = Coin::get_price(name, currency)?;
         let history = Coin::get_history(name, currency, days)?;
         let data_points = Coin::get_data_points(&history);
-        let change = Coin::get_change(&data_points);
+        let change = Coin::get_change(&price, &data_points);
 
         Ok(Coin{
             name: String::from(name),
-            price: price,
-            change: change,
-            history: history,
-            data_points: data_points,
+            price,
+            change,
+            history,
+            data_points,
         })
     }
 
@@ -59,16 +59,13 @@ impl Coin {
             .collect()
     }
 
-    fn get_change(prices: &[(f64, f64)]) -> f64 {
+    fn get_change(current: &Price, prices: &[(f64, f64)]) -> f64 {
         let oldest = match prices.first() {
             Some(data) => data.1,
             None => 0.0,
         };
 
-        let newest = match prices.last() {
-            Some(data) => data.1,
-            None => 0.0,
-        };
+        let newest = current.value as f64;
         
         ((newest - oldest) / oldest) * 100.0
     }
