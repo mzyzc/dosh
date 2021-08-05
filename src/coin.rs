@@ -2,6 +2,7 @@ use crate::price::Price;
 
 use std::error::Error;
 use std::str;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ureq;
 
 #[derive(Debug)]
@@ -75,10 +76,10 @@ impl Coin {
             None => 0.0,
         };
 
-        let max = match self.data_points.last() {
-            Some(data) => data.0,
-            None => 0.0,
-        };
+        let max = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or(Duration::new(0, 0))
+            .as_millis() as f64;
 
         (min, max)
     }
@@ -86,7 +87,7 @@ impl Coin {
     fn get_data_points(history: &[Price]) -> Vec<(f64, f64)> {
         history
             .iter()
-            .map(|c| (c.timestamp.timestamp() as f64, c.value as f64))
+            .map(|c| (c.timestamp.as_millis() as f64, c.value as f64))
             .collect()
     }
 

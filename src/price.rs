@@ -1,12 +1,12 @@
 use std::error::Error;
-use chrono::prelude::*;
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use json;
 
 #[derive(Debug)]
 pub struct Price {
     pub value: f32,
     pub currency: String,
-    pub timestamp: DateTime<Utc>,
+    pub timestamp: Duration,
 }
 
 impl Price {
@@ -21,11 +21,15 @@ impl Price {
             .as_f32()
             .ok_or_else(|| "Currency value does not seem to be a number")?;
 
+        let timestamp = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap_or(Duration::new(0, 0));
+
         Ok(
             Price{
-                value: value,
+                value,
                 currency: String::from(currency),
-                timestamp: Utc::now(),
+                timestamp,
             }
         )
     }
@@ -36,12 +40,12 @@ impl Price {
         let prices: Vec<Price> = data["prices"]
             .members()
             .map(|values| {
-                let epoch = values[0].as_i64().unwrap();
+                let time = values[0].as_i64().unwrap() as u64;
                 let value = values[1].as_f32().unwrap();
                 Price{
                     value: value,
                     currency: String::from(currency),
-                    timestamp: Utc.timestamp(epoch, 0),
+                    timestamp: Duration::from_millis(time),
                 }
             })
             .collect();
