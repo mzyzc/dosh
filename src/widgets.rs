@@ -1,7 +1,7 @@
 use crate::coin::Coin;
 
-use tui::widgets::{Axis, Block, Borders, Chart, Dataset, GraphType, Tabs};
-use tui::layout::{Layout, Constraint, Direction};
+use tui::widgets::{Axis, Block, Borders, Chart, Dataset, GraphType, Paragraph, Tabs};
+use tui::layout::{Alignment, Layout, Constraint, Direction};
 use tui::symbols::Marker;
 use tui::text::Spans;
 
@@ -87,8 +87,16 @@ pub fn get_graph(coin: &Coin) -> Chart {
         )
 }
 
-pub fn get_exchange_block() -> Block<'static> {
-    Block::default()
+pub fn get_exchange_block(coin: &Coin) -> Paragraph {
+    let block = Block::default()
         .title("Exchange")
-        .borders(Borders::ALL)
+        .borders(Borders::ALL);
+
+    let text = vec![
+        Spans::from(format!("1 {}", &coin.name)),
+        Spans::from(format!("= {} {}", &coin.price.value, &coin.price.currency)),
+    ];
+
+    Paragraph::new(text)
+        .block(block)
 }

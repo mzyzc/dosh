@@ -36,7 +36,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let graph = widgets::get_graph(&coin);
             frame.render_widget(graph, bottom[0]);
 
-            let exchange = widgets::get_exchange_block();
+            let exchange = widgets::get_exchange_block(&coin);
             frame.render_widget(exchange, bottom[1]);
         })?;
     }
