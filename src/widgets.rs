@@ -49,9 +49,30 @@ pub fn get_timescale_tabs() -> Tabs<'static> {
         .block(block)
 }
 
-pub fn get_change_block() -> Block<'static> {
-    Block::default()
-        .title("Change")
+pub fn get_change_block(coin: &Coin) -> Paragraph {
+    let block = Block::default()
+        .title("Change");
+
+    let oldest = match &coin.data_points.first() {
+        Some(data) => data.1,
+        None => 0.0,
+    };
+
+    let newest = match &coin.data_points.last() {
+        Some(data) => data.1,
+        None => 0.0,
+    };
+    
+    let change = ((newest - oldest) / oldest) * 100.0;
+    let increase = if change >= 0.0 {true} else {false};
+
+    let text = format!("{}{:.2}%",
+        if increase {"+"} else {"-"},
+        change,
+    );
+
+    Paragraph::new(text)
+        .block(block)
 }
 pub fn get_graph(coin: &Coin) -> Chart {
     let datasets = vec![

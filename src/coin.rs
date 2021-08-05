@@ -31,7 +31,7 @@ impl Coin {
     }
 
     pub fn get_price(coin: &str, currency: &str) -> Result<Price, Box<dyn Error>> {
-        let url = format!("https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies={}&include_24h_change=true",
+        let url = format!("https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies={}",
             coin,
             currency,
         );

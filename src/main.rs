@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
-    let coin = Coin::new("ethereum", "gbp", 7)?;
+    let coin = Coin::new("ethereum", "gbp", 1)?;
     println!("{:#?}", &coin.data_points);
 
     loop {
@@ -30,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let timescale = widgets::get_timescale_tabs();
             frame.render_widget(timescale, top[0]);
 
-            let change = widgets::get_change_block();
+            let change = widgets::get_change_block(&coin);
             frame.render_widget(change, top[1]);
 
             let graph = widgets::get_graph(&coin);
