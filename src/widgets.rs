@@ -1,5 +1,8 @@
-use tui::widgets::{Block, Borders, Tabs};
+use crate::coin::Coin;
+
+use tui::widgets::{Axis, Block, Borders, Chart, Dataset, GraphType, Tabs};
 use tui::layout::{Layout, Constraint, Direction};
+use tui::symbols::Marker;
 use tui::text::Spans;
 
 pub fn get_chunks() -> Layout {
@@ -50,10 +53,28 @@ pub fn get_change_block() -> Block<'static> {
     Block::default()
         .title("Change")
 }
-pub fn get_graph_block() -> Block<'static> {
-    Block::default()
-        .title("Graph")
-        .borders(Borders::ALL)
+pub fn get_graph(coin: &Coin) -> Chart {
+    let datasets = vec![
+        Dataset::default()
+            .marker(Marker::Braille)
+            .graph_type(GraphType::Line)
+            .data(&coin.data_points)
+    ];
+
+    let block = Block::default()
+        .title("History")
+        .borders(Borders::ALL);
+
+    Chart::new(datasets)
+        .block(block)
+        .x_axis(
+            Axis::default()
+                .bounds([1627603200000.0, 1628159450000.0])
+        )
+        .y_axis(
+            Axis::default()
+                .bounds([1700.0, 1900.0])
+        )
 }
 
 pub fn get_exchange_block() -> Block<'static> {

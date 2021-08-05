@@ -14,6 +14,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let coin = Coin::new("ethereum", "gbp", 7)?;
+    println!("{:#?}", &coin.data_points);
 
     loop {
         terminal.draw(|frame| {
@@ -32,7 +33,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             let change = widgets::get_change_block();
             frame.render_widget(change, top[1]);
 
-            let graph = widgets::get_graph_block();
+            let graph = widgets::get_graph(&coin);
             frame.render_widget(graph, bottom[0]);
 
             let exchange = widgets::get_exchange_block();

@@ -4,9 +4,9 @@ use json;
 
 #[derive(Debug)]
 pub struct Price {
-    value: f32,
-    currency: String,
-    timestamp: DateTime<Utc>,
+    pub value: f32,
+    pub currency: String,
+    pub timestamp: DateTime<Utc>,
 }
 
 impl Price {

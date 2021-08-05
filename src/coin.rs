@@ -6,9 +6,10 @@ use ureq;
 
 #[derive(Debug)]
 pub struct Coin{
-    name: String,
-    price: Price,
-    history: Vec<Price>,
+    pub name: String,
+    pub price: Price,
+    pub history: Vec<Price>,
+    pub data_points: Vec<(f64, f64)>,
 }
 
 impl Coin {
@@ -16,10 +17,16 @@ impl Coin {
         let price = Coin::get_price(name, currency)?;
         let history = Coin::get_history(name, currency, days)?;
 
+        let data_points = history
+            .iter()
+            .map(|c| (c.timestamp.timestamp() as f64, c.value as f64))
+            .collect();
+
         Ok(Coin{
             name: String::from(name),
             price: price,
             history: history,
+            data_points: data_points,
         })
     }
 
