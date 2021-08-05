@@ -14,7 +14,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let coin = Coin::new("ethereum", "gbp", 1)?;
-    println!("{:#?}", &coin.data_points);
 
     loop {
         terminal.draw(|frame| {
