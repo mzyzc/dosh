@@ -6,6 +6,9 @@ use coin::Coin;
 
 use std::error::Error;
 use std::io;
+use std::sync::{Arc, RwLock};
+use std::thread;
+use std::time::Duration;
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
 
@@ -13,9 +16,24 @@ fn main() -> Result<(), Box<dyn Error>> {
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
-    let coin = Coin::new("ethereum", "gbp", 1)?;
+    let coin_lock = Arc::new(RwLock::new(
+        Coin::new("ethereum", "gbp", 1)?
+    ));
+    let write_lock = Arc::clone(&coin_lock);
+
+    thread::spawn(move || {
+        loop {
+            if let Ok(mut coin) = write_lock.write() {
+                *coin = Coin::new("ethereum", "gbp", 1).unwrap();
+            }
+            thread::sleep(Duration::from_secs(60));
+        }
+    });
+
 
     loop {
+        let coin = coin_lock.read().unwrap();
+
         terminal.draw(|frame| {
             let chunks = widgets::get_chunks()
                 .split(frame.size());
