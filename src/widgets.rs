@@ -54,7 +54,7 @@ pub fn get_change_block(coin: &Coin) -> Paragraph {
     let block = Block::default()
         .title("Change");
 
-    let increase = if *&coin.change >= 0.0 {true} else {false};
+    let increase = if *&coin.change > 0.0 {true} else {false};
 
     let text = format!("{}{:.2}%",
         if increase {"+"} else {""},
@@ -65,7 +65,7 @@ pub fn get_change_block(coin: &Coin) -> Paragraph {
         .block(block)
         .style(Style::default()
             .fg(
-                if *&coin.change >= 0.0 {Color::Green} else {Color::Red}
+                if increase {Color::Green} else if *&coin.change < 0.0 {Color::Red} else {Color::Reset}
             )
         )
 }
@@ -76,7 +76,7 @@ pub fn get_graph(coin: &Coin) -> Chart {
             .graph_type(GraphType::Line)
             .style(Style::default()
                 .fg(
-                    if *&coin.change >= 0.0 {Color::Green} else {Color::Red}
+                    if *&coin.change > 0.0 {Color::Green} else if *&coin.change < 0.0 {Color::Red} else {Color::Reset}
                 )
             )
             .data(&coin.data_points)
