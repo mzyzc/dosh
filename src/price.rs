@@ -2,7 +2,7 @@ use std::error::Error;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use json;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Price {
     pub value: f32,
     pub currency: String,

@@ -35,11 +35,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         }
     });
 
+    let mut coin = coin_lock.read()
+        .expect("Coin data could not be read")
+        .clone();
 
-    let mut coin = coin_lock.read().expect("Coin data could not be read");
     loop {
-        if let Ok(c) = coin_lock.read() {
-            coin = c;
+        if let Ok(c) = coin_lock.try_read() {
+            coin = (*c).clone();
         }
 
         terminal.draw(|frame| {

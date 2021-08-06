@@ -5,7 +5,7 @@ use std::str;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 use ureq;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct Coin{
     pub name: String,
     pub price: Price,
