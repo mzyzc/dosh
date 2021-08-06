@@ -66,6 +66,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             let exchange = widgets::get_exchange_block(&coin);
             frame.render_widget(exchange, bottom[1]);
         })?;
+
+        thread::sleep(Duration::from_millis(100));
     }
 
     Ok(())
