@@ -6,7 +6,7 @@ use coin::Coin;
 
 use std::error::Error;
 use std::io;
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, RwLock, RwLockReadGuard};
 use std::thread;
 use std::time::Duration;
 use tui::Terminal;
@@ -24,15 +24,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     thread::spawn(move || {
         loop {
             if let Ok(mut coin) = write_lock.write() {
-                *coin = Coin::new("ethereum", "gbp", 1).unwrap();
+                if let Ok(coin_data) = Coin::new("ethereum", "gbp", 1) {
+                    *coin = coin_data;
+                }
             }
             thread::sleep(Duration::from_secs(60));
         }
     });
 
 
+    let mut coin = coin_lock.read().expect("Could not read coin data");
     loop {
-        let coin = coin_lock.read().unwrap();
+        if let Ok(c) = coin_lock.read() {
+            coin = c;
+        }
 
         terminal.draw(|frame| {
             let chunks = widgets::get_chunks()
