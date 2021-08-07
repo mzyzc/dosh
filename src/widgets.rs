@@ -107,8 +107,8 @@ pub fn get_exchange_block(coin: &Coin) -> Paragraph {
         .borders(Borders::ALL);
 
     let text = vec![
-        Spans::from(format!("1 {}", &coin.name)),
-        Spans::from(format!("= {} {}", &coin.price.value, &coin.price.currency)),
+        Spans::from(format!("1 {}", &coin.name.to_uppercase())),
+        Spans::from(format!("= {} {}", &coin.price.value, &coin.price.currency.to_uppercase())),
     ];
 
     Paragraph::new(text)
