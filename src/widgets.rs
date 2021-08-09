@@ -106,10 +106,15 @@ pub fn get_exchange_block(coin: &Coin) -> Paragraph {
         .title("Exchange")
         .borders(Borders::ALL);
 
-    let text = vec![
+    let mut text: Vec<Spans> = coin.price
+        .iter()
+        .map(|e| Spans::from(format!("= {} {}", e.value, e.currency.to_uppercase())))
+        .collect();
+
+    text.insert(
+        0,
         Spans::from(format!("1 {}", &coin.name.to_uppercase())),
-        Spans::from(format!("= {} {}", &coin.price.value, &coin.price.currency.to_uppercase())),
-    ];
+    );
 
     Paragraph::new(text)
         .block(block)

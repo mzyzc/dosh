@@ -8,7 +8,7 @@ use ureq;
 #[derive(Clone, Debug)]
 pub struct Coin{
     pub name: String,
-    pub price: Price,
+    pub price: Vec<Price>,
     pub change: f64,
     pub history: Vec<Price>,
     pub data_points: Vec<(f64, f64)>,
@@ -19,7 +19,7 @@ impl Coin {
         let price = Coin::get_price(name, currency)?;
         let history = Coin::get_history(name, currency, days)?;
         let data_points = Coin::get_data_points(&history);
-        let change = Coin::get_change(&price, &data_points);
+        let change = Coin::get_change(&price[0], &data_points);
 
         Ok(Coin{
             name: String::from(name),
@@ -30,14 +30,14 @@ impl Coin {
         })
     }
 
-    pub fn get_price(coin: &str, currency: &str) -> Result<Price, Box<dyn Error>> {
-        let url = format!("https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies={}",
+    pub fn get_price(coin: &str, currency: &str) -> Result<Vec<Price>, Box<dyn Error>> {
+        let url = format!("https://api.coingecko.com/api/v3/simple/price?ids={}&vs_currencies={}%2Cusd%2Ceur%2Cjpy%2Cgbp",
             coin,
             currency,
         );
 
         let data = get(&url)?;
-        let price = Price::from_price(&data, currency)?;
+        let price = Price::from_price(&data)?;
         Ok(price)
     }
 
