@@ -14,20 +14,20 @@ use tui::Terminal;
 use tui::backend::CrosstermBackend;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let args = parse_args(env::args());
+    let args = Args::parse(env::args());
 
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
     let coin_lock = Arc::new(RwLock::new(
-        Coin::new(&args.0, args.1, args.2, &args.3).expect("Coin data could not be retrieved")
+        Coin::new(&args.coin, args.quantity, args.days, &args.currency).expect("Coin data could not be retrieved")
     ));
     let write_lock = Arc::clone(&coin_lock);
 
     thread::spawn(move || {
         loop {
             if let Ok(mut coin) = write_lock.write() {
-                if let Ok(coin_data) = Coin::new(&args.0, args.1, args.2, &args.3) {
+                if let Ok(coin_data) = Coin::new(&args.coin, args.quantity, args.days, &args.currency) {
                     *coin = coin_data;
                 }
             }
@@ -73,30 +73,39 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn parse_args(args: env::Args) -> (String, f64, u32, String) {
-    let args: Vec<String> = args.collect();
+struct Args {
+    pub coin: String,
+    pub quantity: f64,
+    pub days: u32,
+    pub currency: String,
+}
 
-    let coin = match args.get(1) {
-        Some(data) => data.to_owned(),
-        None => String::from("ethereum"),
-    };
+impl Args {
+    pub fn parse(args: env::Args) -> Args {
+        let args: Vec<String> = args.collect();
 
-    let quantity: f64 = match args.get(2) {
-        Some(data) => data.parse()
-            .expect("Invalid 'quantity' argument"),
-        None => 1.0,
-    };
+        let coin = match args.get(1) {
+            Some(data) => data.to_owned(),
+            None => String::from("ethereum"),
+        };
 
-    let days: u32 = match args.get(3) {
-        Some(data) => data.parse()
-            .expect("Invalid 'days' argument"),
-        None => 7,
-    };
+        let quantity: f64 = match args.get(2) {
+            Some(data) => data.parse()
+                .expect("Invalid 'quantity' argument"),
+            None => 1.0,
+        };
 
-    let currency = match args.get(4) {
-        Some(data) => data.to_owned(),
-        None => String::from("usd"),
-    };
-    
-    (coin, quantity, days, currency)
+        let days: u32 = match args.get(3) {
+            Some(data) => data.parse()
+                .expect("Invalid 'days' argument"),
+            None => 7,
+        };
+
+        let currency = match args.get(4) {
+            Some(data) => data.to_owned(),
+            None => String::from("usd"),
+        };
+        
+        Args{coin, quantity, days, currency}
+    }
 }
