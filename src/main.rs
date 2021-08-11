@@ -10,6 +10,8 @@ use std::io;
 use std::sync::{Arc, RwLock};
 use std::thread;
 use std::time::Duration;
+
+use rust_decimal::prelude::*;
 use tui::Terminal;
 use tui::backend::CrosstermBackend;
 
@@ -75,7 +77,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 struct Args {
     pub coin: String,
-    pub quantity: f64,
+    pub quantity: Decimal,
     pub days: u32,
     pub currency: String,
 }
@@ -86,7 +88,7 @@ impl Args {
 
         let mut output = Args{
             coin: String::from("ethereum"),
-            quantity: 1.0,
+            quantity: Decimal::new(1, 1),
             days: 7,
             currency: String::from("usd"),
         };

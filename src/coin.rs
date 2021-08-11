@@ -3,12 +3,14 @@ use crate::price::Price;
 use std::error::Error;
 use std::str;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+
+use rust_decimal::prelude::*;
 use ureq;
 
 #[derive(Clone, Debug)]
 pub struct Coin{
     pub name: String,
-    pub quantity: f64,
+    pub quantity: Decimal,
     pub price: Vec<Price>,
     pub change: f64,
     pub history: Vec<Price>,
@@ -16,7 +18,7 @@ pub struct Coin{
 }
 
 impl Coin {
-    pub fn new(name: &str, quantity: f64, days: u32, currency: &str) -> Result<Coin, Box<dyn Error>> {
+    pub fn new(name: &str, quantity: Decimal, days: u32, currency: &str) -> Result<Coin, Box<dyn Error>> {
         let price = Coin::get_price(name, currency)?;
         let history = Coin::get_history(name, currency, days)?;
         let data_points = Coin::get_data_points(&history);
@@ -65,7 +67,7 @@ impl Coin {
             }
 
             if point.1 > max {
-                max = point.1
+                max = point.1.to_f64().unwrap()
             }
         }
 
@@ -89,19 +91,19 @@ impl Coin {
     fn get_data_points(history: &[Price]) -> Vec<(f64, f64)> {
         history
             .iter()
-            .map(|c| (c.timestamp.as_millis() as f64, c.value as f64))
+            .map(|c| (c.timestamp.as_millis() as f64, c.value.to_f64().unwrap()))
             .collect()
     }
 
     fn get_change(current: &Price, prices: &[(f64, f64)]) -> f64 {
         let oldest = match prices.first() {
-            Some(data) => data.1,
-            None => 0.0,
+                Some(data) => data.1,
+                None => 0.0,
         };
 
-        let newest = current.value as f64;
+        let newest = current.value.to_f64().unwrap();
         
-        ((newest - oldest) / oldest) * 100.0
+        ((newest - oldest) / oldest).to_f64().unwrap() * 100.0
     }
 }
 

@@ -108,7 +108,7 @@ pub fn get_exchange_block(coin: &Coin) -> Paragraph {
 
     let mut text: Vec<Spans> = coin.price
         .iter()
-        .map(|e| Spans::from(format!("= {:.2} {}", e.value as f64 * &coin.quantity, e.currency.to_uppercase())))
+        .map(|e| Spans::from(format!("= {:.2} {}", e.value * &coin.quantity, e.currency.to_uppercase())))
         .collect();
 
     text.insert(

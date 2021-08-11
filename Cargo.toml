@@ -8,5 +8,6 @@ edition = "2018"
 
 [dependencies]
 json = "0.12"
+rust_decimal = "1.15"
 tui = { version = "0.16", default-features = false, features = ["crossterm"] }
 ureq = "2.1"
