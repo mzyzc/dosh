@@ -8,6 +8,7 @@ use ureq;
 #[derive(Clone, Debug)]
 pub struct Coin{
     pub name: String,
+    pub quantity: f64,
     pub price: Vec<Price>,
     pub change: f64,
     pub history: Vec<Price>,
@@ -15,7 +16,7 @@ pub struct Coin{
 }
 
 impl Coin {
-    pub fn new(name: &str, currency: &str, days: u32) -> Result<Coin, Box<dyn Error>> {
+    pub fn new(name: &str, quantity: f64, days: u32, currency: &str) -> Result<Coin, Box<dyn Error>> {
         let price = Coin::get_price(name, currency)?;
         let history = Coin::get_history(name, currency, days)?;
         let data_points = Coin::get_data_points(&history);
@@ -23,6 +24,7 @@ impl Coin {
 
         Ok(Coin{
             name: String::from(name),
+            quantity,
             price,
             change,
             history,

@@ -20,14 +20,14 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     let coin_lock = Arc::new(RwLock::new(
-        Coin::new(&args.0, &args.1, args.2).expect("Coin data could not be retrieved")
+        Coin::new(&args.0, args.1, args.2, &args.3).expect("Coin data could not be retrieved")
     ));
     let write_lock = Arc::clone(&coin_lock);
 
     thread::spawn(move || {
         loop {
             if let Ok(mut coin) = write_lock.write() {
-                if let Ok(coin_data) = Coin::new(&args.0, &args.1, args.2) {
+                if let Ok(coin_data) = Coin::new(&args.0, args.1, args.2, &args.3) {
                     *coin = coin_data;
                 }
             }
@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn parse_args(args: env::Args) -> (String, String, u32) {
+fn parse_args(args: env::Args) -> (String, f64, u32, String) {
     let args: Vec<String> = args.collect();
 
     let coin = match args.get(1) {
@@ -81,16 +81,22 @@ fn parse_args(args: env::Args) -> (String, String, u32) {
         None => String::from("ethereum"),
     };
 
-    let currency = match args.get(2) {
-        Some(data) => data.to_owned(),
-        None => String::from("usd"),
+    let quantity: f64 = match args.get(2) {
+        Some(data) => data.parse()
+            .expect("Invalid 'quantity' argument"),
+        None => 1.0,
     };
 
     let days: u32 = match args.get(3) {
-        Some(data) => data.parse::<u32>()
+        Some(data) => data.parse()
             .expect("Invalid 'days' argument"),
         None => 7,
     };
+
+    let currency = match args.get(4) {
+        Some(data) => data.to_owned(),
+        None => String::from("usd"),
+    };
     
-    (coin, currency, days)
+    (coin, quantity, days, currency)
 }
