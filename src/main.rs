@@ -84,28 +84,29 @@ impl Args {
     pub fn parse(args: env::Args) -> Args {
         let args: Vec<String> = args.collect();
 
-        let coin = match args.get(1) {
-            Some(data) => data.to_owned(),
-            None => String::from("ethereum"),
+        let mut output = Args{
+            coin: String::from("ethereum"),
+            quantity: 1.0,
+            days: 7,
+            currency: String::from("usd"),
         };
 
-        let quantity: f64 = match args.get(2) {
-            Some(data) => data.parse()
-                .expect("Invalid 'quantity' argument"),
-            None => 1.0,
-        };
+        for arg in args[1..].iter() {
+            let mut split = arg.split('=');
+            let (key, value) = (
+                split.next().expect("Invalid option formatting"),
+                split.next().expect("Invalid option formatting"),
+            );
 
-        let days: u32 = match args.get(3) {
-            Some(data) => data.parse()
-                .expect("Invalid 'days' argument"),
-            None => 7,
-        };
+            match key {
+                "coin" => output.coin = String::from(value),
+                "quantity" => output.quantity = value.parse().expect("Invalid 'quantity' argument"),
+                "days" => output.days = value.parse().expect("Invalid 'days' argument"),
+                "currency" => output.currency = String::from(value),
+                _ => {},
+            }
+        }
 
-        let currency = match args.get(4) {
-            Some(data) => data.to_owned(),
-            None => String::from("usd"),
-        };
-        
-        Args{coin, quantity, days, currency}
+        output
     }
 }
