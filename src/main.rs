@@ -16,20 +16,20 @@ use tui::Terminal;
 use tui::backend::CrosstermBackend;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let args = Args::parse(env::args());
+    let opts = Settings::parse(env::args());
 
     let backend = CrosstermBackend::new(io::stdout());
     let mut terminal = Terminal::new(backend)?;
 
     let coin_lock = Arc::new(RwLock::new(
-        Coin::new(&args.coin, args.quantity, args.days, &args.currency).expect("Coin data could not be retrieved")
+        Coin::new(&opts.coin, opts.quantity, opts.days, &opts.currency).expect("Coin data could not be retrieved")
     ));
     let write_lock = Arc::clone(&coin_lock);
 
     thread::spawn(move || {
         loop {
             if let Ok(mut coin) = write_lock.write() {
-                if let Ok(coin_data) = Coin::new(&args.coin, args.quantity, args.days, &args.currency) {
+                if let Ok(coin_data) = Coin::new(&opts.coin, opts.quantity, opts.days, &opts.currency) {
                     *coin = coin_data;
                 }
             }
@@ -75,20 +75,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-struct Args {
+struct Settings {
     pub coin: String,
     pub quantity: Decimal,
     pub days: u32,
     pub currency: String,
 }
 
-impl Args {
-    pub fn parse(args: env::Args) -> Args {
+impl Settings {
+    pub fn parse(args: env::Args) -> Settings {
         let args: Vec<String> = args.collect();
 
-        let mut output = Args{
+        let mut output = Settings{
             coin: String::from("ethereum"),
-            quantity: Decimal::new(1, 1),
+            quantity: Decimal::new(1, 0),
             days: 7,
             currency: String::from("usd"),
         };
