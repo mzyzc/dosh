@@ -11,7 +11,7 @@ pub struct Settings {
 impl Default for Settings {
     fn default() -> Settings {
         Settings{
-            coin: String::from("ethereum"),
+            coin: String::from("bitcoin"),
             quantity: Decimal::new(1, 0),
             days: 7,
             currency: String::from("usd"),
