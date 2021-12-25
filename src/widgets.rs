@@ -101,9 +101,9 @@ pub fn get_graph(coin: &Coin) -> Chart {
         )
 }
 
-pub fn get_exchange_block(coin: &Coin) -> Paragraph {
+pub fn get_price_block(coin: &Coin) -> Paragraph {
     let block = Block::default()
-        .title("Exchange")
+        .title("Price")
         .borders(Borders::ALL);
 
     let mut text: Vec<Spans> = coin.price

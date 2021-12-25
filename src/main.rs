@@ -66,8 +66,8 @@ fn main() -> Result<(), Box<dyn Error>> {
             let graph = widgets::get_graph(&coin);
             frame.render_widget(graph, bottom[0]);
 
-            let exchange = widgets::get_exchange_block(&coin);
-            frame.render_widget(exchange, bottom[1]);
+            let price = widgets::get_price_block(&coin);
+            frame.render_widget(price, bottom[1]);
         })?;
 
         thread::sleep(Duration::from_millis(100));
