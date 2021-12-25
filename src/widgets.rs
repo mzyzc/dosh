@@ -51,10 +51,14 @@ pub fn get_timescale_tabs() -> Tabs<'static> {
 }
 
 pub fn get_change_block(coin: &Coin) -> Paragraph {
-    let block = Block::default()
-        .title("Change");
-
     let increase = if *&coin.change > 0.0 {true} else {false};
+
+    let block = Block::default()
+        .title(
+            format!("Change {}",
+            if increase {'▲'} else {'▼'})
+        );
+
 
     let text = format!("{}{:.2}%",
         if increase {"+"} else {""},
