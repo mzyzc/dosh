@@ -110,9 +110,22 @@ pub fn get_price_block(coin: &Coin) -> Paragraph {
         .title("Price")
         .borders(Borders::ALL);
 
+    fn format_price(price: rust_decimal::Decimal, currency: &str) -> String {
+        match currency {
+            "jpy" => format!("{:.0}", price),
+            _ => format!("{:.2}", price),
+        }
+    }
+
     let mut text: Vec<Spans> = coin.price
         .iter()
-        .map(|e| Spans::from(format!("= {:.2} {}", e.value * &coin.quantity, e.currency.to_uppercase())))
+        .map(|e| Spans::from(
+            format!(
+                "= {} {}",
+                format_price(e.value * &coin.quantity, &e.currency),
+                e.currency.to_uppercase()
+            )
+        ))
         .collect();
 
     text.insert(
